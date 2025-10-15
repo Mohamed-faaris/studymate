@@ -29,6 +29,10 @@ jobs:
 
       - name: Run lint
         run: pnpm lint
+        env:
+          SKIP_ENV_VALIDATION: true
 
       - name: Run TypeScript check
         run: pnpm typecheck
+        env:
+          SKIP_ENV_VALIDATION: true
