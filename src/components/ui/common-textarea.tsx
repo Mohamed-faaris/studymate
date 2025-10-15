@@ -254,7 +254,8 @@ export const CommonTextarea = forwardRef<
                     >
                       <PromptInputModelSelectTrigger className="h-8 w-21 text-xs">
                         <PromptInputModelSelectValue>
-                          {models.find(model => model.id === selectedModel)?.label || "Select model"}
+                          {models.find((model) => model.id === selectedModel)
+                            ?.label || "Select model"}
                         </PromptInputModelSelectValue>
                       </PromptInputModelSelectTrigger>
                       <PromptInputModelSelectContent>

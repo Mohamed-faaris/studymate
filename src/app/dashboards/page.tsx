@@ -50,11 +50,9 @@ export default function DashboardPage() {
         // Redirect to the conversation page with the new conversation ID
         router.push(`/dashboards/${data.conversationId}`);
       } else {
-       router.push(`/dashboards/123`);
+        router.push(`/dashboards/123`);
         // Handle error - maybe show a toast or error message
       }
-      
-
     } catch (error) {
       console.error("Error creating conversation:", error);
       // Handle error - maybe show a toast or error message
@@ -100,11 +98,11 @@ export default function DashboardPage() {
             onModelChange={setSelectedModel}
             showModelSelector={true}
             showAudioButton={true}
-            onAudioTranscription={(text) => setInput(prev => prev + text)}
+            onAudioTranscription={(text) => setInput((prev) => prev + text)}
             showFileUpload={true}
             onFileUpload={(files) => {
               // Handle file upload - for now just log the files
-              console.log('Files uploaded:', files);
+              console.log("Files uploaded:", files);
               // You can add file processing logic here
             }}
             acceptedFileTypes="image/*,.pdf,.doc,.docx,.txt"

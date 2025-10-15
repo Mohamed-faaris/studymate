@@ -183,7 +183,6 @@ export default function ConversationPage() {
       {/* Input Area */}
       <div className="border-t border-gray-200 bg-white">
         <div className="mx-auto max-w-4xl p-4">
-
           <CommonTextarea
             value={input}
             onChange={setInput}
@@ -197,11 +196,11 @@ export default function ConversationPage() {
             onModelChange={setSelectedModel}
             showModelSelector={true}
             showAudioButton={true}
-            onAudioTranscription={(text) => setInput(prev => prev + text)}
+            onAudioTranscription={(text) => setInput((prev) => prev + text)}
             showFileUpload={true}
             onFileUpload={(files) => {
               // Handle file upload - for now just log the files
-              console.log('Files uploaded:', files);
+              console.log("Files uploaded:", files);
               // You can add file processing logic here
             }}
             acceptedFileTypes="image/*,.pdf,.doc,.docx,.txt"
