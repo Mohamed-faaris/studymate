@@ -64,19 +64,27 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="w-full max-w-md rounded-lg bg-white/10 p-8 shadow-xl backdrop-blur-md">
-        <h1 className="mb-8 text-center text-3xl font-bold">Register</h1>
+    <div className="flex min-h-screen items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md rounded-lg border border-gray-200 bg-white p-8 shadow-sm">
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Create Account</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Join StudyMate to start learning
+          </p>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {error && (
-            <div className="rounded border border-red-500 bg-red-500/20 px-4 py-3 text-red-100">
+            <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-red-800">
               {error}
             </div>
           )}
 
           <div>
-            <label htmlFor="name" className="mb-2 block text-sm font-medium">
+            <label
+              htmlFor="name"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
               Name
             </label>
             <input
@@ -85,13 +93,16 @@ export default function RegisterPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter your name"
             />
           </div>
 
           <div>
-            <label htmlFor="email" className="mb-2 block text-sm font-medium">
+            <label
+              htmlFor="email"
+              className="mb-2 block text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <input
@@ -100,7 +111,7 @@ export default function RegisterPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter your email"
             />
           </div>
@@ -108,7 +119,7 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="password"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 block text-sm font-medium text-gray-700"
             >
               Password
             </label>
@@ -118,7 +129,7 @@ export default function RegisterPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
               placeholder="Enter your password"
             />
           </div>
@@ -126,7 +137,7 @@ export default function RegisterPage() {
           <div>
             <label
               htmlFor="confirmPassword"
-              className="mb-2 block text-sm font-medium"
+              className="mb-2 block text-sm font-medium text-gray-700"
             >
               Confirm Password
             </label>
@@ -136,7 +147,7 @@ export default function RegisterPage() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full rounded-md border border-white/30 bg-white/20 px-3 py-2 text-white placeholder-white/50 focus:ring-2 focus:ring-white/50 focus:outline-none"
+              className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none"
               placeholder="Confirm your password"
             />
           </div>
@@ -144,18 +155,18 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full rounded-md bg-green-600 px-4 py-2 font-medium text-white transition duration-200 hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+            className="w-full rounded-md bg-blue-600 px-4 py-2 font-medium text-white transition duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isLoading ? "Creating account..." : "Register"}
+            {isLoading ? "Creating account..." : "Create Account"}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-white/70">
+          <p className="text-gray-600">
             Already have an account?{" "}
             <Link
               href="/sign-in"
-              className="text-blue-300 underline hover:text-blue-200"
+              className="text-blue-600 underline hover:text-blue-800"
             >
               Sign in here
             </Link>
