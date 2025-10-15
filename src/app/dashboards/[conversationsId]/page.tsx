@@ -110,12 +110,13 @@ export default function ConversationPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: messageToSend,
-          chatId: conversationId,
+          topic: messageToSend,
+          id: conversationId,
           level: selectedLevel,
+          session_id: conversationId,
         }),
       });
-
+      console.log("API response:", response);
       if (!response.ok) {
         throw new Error("Failed to send message");
       }
@@ -133,7 +134,7 @@ export default function ConversationPage() {
       const assistantMessage: Message = {
         id: Date.now().toString(),
         role: "assistant",
-        content: data.response,
+        content: data.ai?.explanation || data.response || "",
         createdAt: new Date(),
         status: "sent",
       };
@@ -144,7 +145,7 @@ export default function ConversationPage() {
 
       // Update user message status to error
       setMessages((prev) =>
-        prev.map((msg) =>
+        prev.map((msg) => 
           msg.id === userMessage.id
             ? { ...msg, status: "error" as const }
             : msg,
@@ -358,9 +359,14 @@ export default function ConversationPage() {
                         : "border border-gray-200 bg-white text-gray-900"
                     }`}
                   >
-                    <div className="leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                    </div>
+                    <div 
+                      className="leading-relaxed"
+                      dangerouslySetInnerHTML={{
+                        __html: message.role === "assistant" 
+                          ? message.content.replace(/\n/g, '<br/>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>')
+                          : message.content
+                      }}
+                    />
                     <div
                       className={`mt-2 flex items-center justify-between text-xs ${
                         message.role === "user"

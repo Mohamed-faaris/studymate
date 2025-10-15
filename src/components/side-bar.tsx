@@ -166,7 +166,7 @@ export default function SideBar() {
                 No conversations yet
               </div>
             ) : (
-              conversations.map((conv) => (
+              [].map((conv) => (
                 <Link key={conv.id} href={`/dashboards/${conv.id}`}>
                   <Button
                     variant="ghost"
