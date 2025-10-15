@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import aiApiClient from "~/lib/axios";
-import { Conversation } from "~/server/db/conversation.schema";
 
 interface AIExplanationResponse {
   question: string;
@@ -12,7 +11,7 @@ interface AIExplanationResponse {
   pdf_chunks: null | any[];
 }
 
-RequestType{
+type RequestType = {
   topic: string;
   level: string;
   uuid: string;

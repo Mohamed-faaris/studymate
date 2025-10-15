@@ -1,7 +1,8 @@
 import { auth } from "~/server/auth";
 import { NextResponse } from "next/server";
-import { Conversation } from "~/server/db/conversation.schema";
-import { connectMongo } from "~/server/db/mongoose";
+import { db } from '~/server/db';
+import { conversations } from '~/server/db/schema';
+import { eq, and } from 'drizzle-orm';
 
 export async function GET(
   request: Request,
@@ -20,43 +21,23 @@ export async function GET(
       return NextResponse.json({ error: "Conversation ID is required" }, { status: 400 });
     }
 
-    await connectMongo();
-
-    // Find conversation and populate createdBy for user info
-    const conversation = await Conversation.findById(conversationId)
-      .populate('createdBy', 'name email')
-      .populate('viewer', 'name email');
-
-    if (!conversation) {
-      return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+    // Find conversation by ID and userId
+    const convoIdNum = Number(conversationId);
+    const userIdNum = Number(session.user.id);
+    const convoRows = await db.select().from(conversations)
+      .where(and(eq(conversations.id, convoIdNum), eq(conversations.userId, userIdNum)));
+    if (!convoRows.length) {
+      return NextResponse.json({ error: "Conversation not found or access denied" }, { status: 404 });
     }
-
-    // Check if user has access to this conversation
-    const userId = session.user.id;
-    const isCreator = conversation.createdBy._id.toString() === userId;
-    const isViewer = conversation.viewer.some((viewer: any) => viewer._id.toString() === userId);
-
-    if (!isCreator && !isViewer) {
-      return NextResponse.json({ error: "Access denied" }, { status: 403 });
-    }
-
+    const convo = convoRows[0];
     // Return conversation data
     const conversationData = {
-      id: conversation._id.toString(),
-      title: conversation.title,
-      createdBy: {
-        id: conversation.createdBy._id.toString(),
-        name: conversation.createdBy.name,
-        email: conversation.createdBy.email,
-      },
-      viewer: conversation.viewer.map((viewer: any) => ({
-        id: viewer._id.toString(),
-        name: viewer.name,
-        email: viewer.email,
-      })),
-      messages: conversation.message || [],
-      createdAt: conversation.createdAt,
-      updatedAt: conversation.updatedAt,
+      id: convo?.id,
+      title: convo?.title,
+      userId: convo?.userId,
+      sessionId: convo?.sessionId,
+      msgs: convo?.msgs ? JSON.parse(convo.msgs) : [],
+      createdAt: convo?.createdAt ?? null,
     };
     console.log("Fetched conversation:", conversationData);
     return NextResponse.json({ conversation: conversationData });

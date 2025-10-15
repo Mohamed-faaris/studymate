@@ -1,6 +1,8 @@
 import { auth } from "~/server/auth";
 import { NextResponse } from "next/server";
-import { Conversation } from "~/server/db/conversation.schema";
+import { db } from '~/server/db';
+import { conversations } from '~/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 
 export async function GET() {
@@ -11,19 +13,13 @@ export async function GET() {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        const conversations = await Conversation.find({
-            createdBy: session.user.id
-        }).select('title _id createdAt').sort({ createdAt: -1 });
-
-        const conversationsList = conversations.map(conv => ({
-            id: conv._id.toString(),
+        const convoRows = await db.select().from(conversations).where(eq(conversations.userId, session.user.id));
+        const conversationsList = convoRows.map(conv => ({
+            id: conv.id,
             title: conv.title,
-            createdAt: conv.createdAt
+            createdAt: conv.createdAt ?? null
         }));
-
-        return NextResponse.json({
-            conversations: conversationsList
-        });
+        return NextResponse.json({ conversations: conversationsList });
 
     } catch (error) {
         console.error("Error fetching conversations:", error);

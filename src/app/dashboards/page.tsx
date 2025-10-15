@@ -50,7 +50,8 @@ export default function DashboardPage() {
         // Clear the input after successful submission
         setInput("");
         // Redirect to the conversation page with the new conversation ID
-        router.push(`/dashboards/${data.conversationId}`);
+        console.log(data);
+        router.push(`/dashboards/${data.id}`);
       } else {
         router.push(`/dashboards/123`);
         // Handle error - maybe show a toast or error message
