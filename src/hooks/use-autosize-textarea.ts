@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef } from "react"
 interface UseAutosizeTextAreaProps {
   ref: React.RefObject<HTMLTextAreaElement>
   maxHeight?: number
+  minHeight?: number
   borderWidth?: number
   dependencies: React.DependencyList
 }
@@ -10,6 +11,7 @@ interface UseAutosizeTextAreaProps {
 export function useAutosizeTextArea({
   ref,
   maxHeight = Number.MAX_SAFE_INTEGER,
+  minHeight,
   borderWidth = 0,
   dependencies,
 }: UseAutosizeTextAreaProps) {
@@ -22,7 +24,8 @@ export function useAutosizeTextArea({
     const borderAdjustment = borderWidth * 2
 
     if (originalHeight.current === null) {
-      originalHeight.current = currentRef.scrollHeight - borderAdjustment
+      // Use minHeight if provided, otherwise use the current scrollHeight
+      originalHeight.current = minHeight ? minHeight + borderAdjustment : currentRef.scrollHeight - borderAdjustment
     }
 
     currentRef.style.removeProperty("height")
@@ -35,5 +38,5 @@ export function useAutosizeTextArea({
 
     currentRef.style.height = `${clampedToMin + borderAdjustment}px`
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxHeight, ref, ...dependencies])
+  }, [maxHeight, minHeight, ref, ...dependencies])
 }

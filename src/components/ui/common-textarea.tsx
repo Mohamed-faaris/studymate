@@ -91,6 +91,7 @@ export const CommonTextarea = forwardRef<
     useAutosizeTextArea({
       ref: textareaRef,
       maxHeight,
+      minHeight,
       dependencies: [value],
     });
 
@@ -198,7 +199,7 @@ export const CommonTextarea = forwardRef<
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={placeholder}
-            className={`min-h-[${minHeight}px] resize-none rounded-xl border-2 border-gray-200 bg-white px-4 py-3 pr-12 text-base shadow-lg focus:border-purple-500 focus:ring-0`}
+            className="resize-none rounded-xl border-2 border-gray-200 bg-white px-4 py-3 pr-12 text-base shadow-lg focus:border-purple-500 focus:ring-0"
             disabled={disabled || isLoading}
             {...props}
           />
