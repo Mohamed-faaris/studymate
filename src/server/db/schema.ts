@@ -103,3 +103,54 @@ export const verificationTokens = createTable(
   }),
   (t) => [primaryKey({ columns: [t.identifier, t.token] })],
 );
+
+export const conversations = createTable(
+  "conversation",
+  (d) => ({
+    id: d.text({ length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+    title: d.text({ length: 500 }),
+    mode: d.text({ length: 50 }).default("study"), // study, debug, roadmap
+    createdById: d
+      .text({ length: 255 })
+      .notNull()
+      .references(() => users.id),
+    createdAt: d
+      .integer({ mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+    updatedAt: d.integer({ mode: "timestamp" }).$onUpdate(() => new Date()),
+  }),
+  (t) => [
+    index("conversation_created_by_idx").on(t.createdById),
+    index("conversation_mode_idx").on(t.mode),
+  ],
+);
+
+export const messages = createTable(
+  "message",
+  (d) => ({
+    id: d.text({ length: 255 }).notNull().primaryKey().$defaultFn(() => crypto.randomUUID()),
+    conversationId: d
+      .text({ length: 255 })
+      .notNull()
+      .references(() => conversations.id, { onDelete: "cascade" }),
+    role: d.text({ length: 50 }).notNull(), // user, assistant
+    content: d.text().notNull(),
+    createdAt: d
+      .integer({ mode: "timestamp" })
+      .default(sql`(unixepoch())`)
+      .notNull(),
+  }),
+  (t) => [
+    index("message_conversation_idx").on(t.conversationId),
+  ],
+);
+
+export const conversationsRelations = relations(conversations, ({ one, many }) => ({
+  user: one(users, { fields: [conversations.createdById], references: [users.id] }),
+  messages: many(messages),
+}));
+
+export const messagesRelations = relations(messages, ({ one }) => ({
+  conversation: one(conversations, { fields: [messages.conversationId], references: [conversations.id] }),
+}));
