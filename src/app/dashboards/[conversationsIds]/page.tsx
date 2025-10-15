@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { useAutosizeTextArea } from "~/hooks/use-autosize-textarea";
 import {
   Conversation,
   ConversationContent,
@@ -13,17 +12,7 @@ import {
   MessageContent,
   MessageAvatar,
 } from "~/components/ui/shadcn-io/ai/message";
-import {
-  PromptInput,
-  PromptInputTextarea,
-  PromptInputSubmit,
-  PromptInputToolbar,
-  PromptInputModelSelect,
-  PromptInputModelSelectTrigger,
-  PromptInputModelSelectValue,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-} from "~/components/ui/shadcn-io/ai/prompt-input";
+import { CommonTextarea } from "~/components/ui/common-textarea";
 
 interface Message {
   id: string;
@@ -41,8 +30,6 @@ export default function ConversationPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState("study");
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const models = [
     { id: "study", label: "Study", description: "General study assistance" },
     {
@@ -56,12 +43,6 @@ export default function ConversationPage() {
       description: "Learning path and career guidance",
     },
   ];
-
-  useAutosizeTextArea({
-    ref: textareaRef as React.RefObject<HTMLTextAreaElement>,
-    maxHeight: 200,
-    dependencies: [input],
-  });
 
   useEffect(() => {
     // Load conversation messages
@@ -159,13 +140,6 @@ export default function ConversationPage() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
-
   return (
     <div className="flex h-full flex-col">
       {/* Header */}
@@ -209,42 +183,29 @@ export default function ConversationPage() {
       {/* Input Area */}
       <div className="border-t border-gray-200 bg-white">
         <div className="mx-auto max-w-4xl p-4">
-          <PromptInput onSubmit={handleSendMessage}>
-            <PromptInputToolbar>
-              <PromptInputModelSelect
-                value={selectedModel}
-                onValueChange={setSelectedModel}
-              >
-                <PromptInputModelSelectTrigger className="w-40 sm:w-48">
-                  <PromptInputModelSelectValue />
-                </PromptInputModelSelectTrigger>
-                <PromptInputModelSelectContent>
-                  {models.map((model) => (
-                    <PromptInputModelSelectItem key={model.id} value={model.id}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{model.label}</span>
-                        <span className="text-muted-foreground text-xs">
-                          {model.description}
-                        </span>
-                      </div>
-                    </PromptInputModelSelectItem>
-                  ))}
-                </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
-            </PromptInputToolbar>
-            <PromptInputTextarea
-              ref={textareaRef}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder={`Ask me anything about ${models.find((m) => m.id === selectedModel)?.label.toLowerCase()}...`}
-              disabled={isLoading}
-            />
-            <PromptInputSubmit
-              disabled={!input.trim() || isLoading}
-              status={isLoading ? "submitted" : undefined}
-            />
-          </PromptInput>
+
+          <CommonTextarea
+            value={input}
+            onChange={setInput}
+            onSubmit={handleSendMessage}
+            placeholder={`Ask me anything about ${models.find((m) => m.id === selectedModel)?.label.toLowerCase()}...`}
+            disabled={isLoading}
+            isLoading={isLoading}
+            showSubmitButton={true}
+            models={models}
+            selectedModel={selectedModel}
+            onModelChange={setSelectedModel}
+            showModelSelector={true}
+            showAudioButton={true}
+            onAudioTranscription={(text) => setInput(prev => prev + text)}
+            showFileUpload={true}
+            onFileUpload={(files) => {
+              // Handle file upload - for now just log the files
+              console.log('Files uploaded:', files);
+              // You can add file processing logic here
+            }}
+            acceptedFileTypes="image/*,.pdf,.doc,.docx,.txt"
+          />
         </div>
       </div>
     </div>

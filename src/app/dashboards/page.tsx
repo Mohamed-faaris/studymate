@@ -2,17 +2,30 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "~/components/ui/button";
-import { Textarea } from "~/components/ui/textarea";
-import { SendIcon, SparklesIcon } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
+import { CommonTextarea } from "~/components/ui/common-textarea";
 
 export default function DashboardPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("study");
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const models = [
+    { id: "study", label: "Study", description: "General study assistance" },
+    {
+      id: "debug",
+      label: "Debug",
+      description: "Code debugging and troubleshooting",
+    },
+    {
+      id: "roadmap",
+      label: "Roadmap",
+      description: "Learning path and career guidance",
+    },
+  ];
+
+  const handleSubmit = async () => {
     if (!input.trim() || isLoading) return;
 
     setIsLoading(true);
@@ -25,34 +38,28 @@ export default function DashboardPage() {
         },
         body: JSON.stringify({
           message: input,
+          mode: selectedModel,
           // No chatId for new conversations
         }),
       });
 
-      // if (response.ok) {
-      //   const data = await response.json();
-      //   // Clear the input after successful submission
-      //   setInput("");
-      //   // Redirect to the conversation page with the new conversation ID
-      //   router.push(`/dashboards/${data.conversationId}`);
-      // } else {
-      //   console.error("Failed to create conversation");
-      //   // Handle error - maybe show a toast or error message
-      // }
-      router.push(`/dashboards/123`);
+      if (response.ok) {
+        const data = await response.json();
+        // Clear the input after successful submission
+        setInput("");
+        // Redirect to the conversation page with the new conversation ID
+        router.push(`/dashboards/${data.conversationId}`);
+      } else {
+       router.push(`/dashboards/123`);
+        // Handle error - maybe show a toast or error message
+      }
+      
 
     } catch (error) {
       console.error("Error creating conversation:", error);
       // Handle error - maybe show a toast or error message
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit(e);
     }
   };
 
@@ -80,30 +87,28 @@ export default function DashboardPage() {
           </div>
 
           {/* Chat Input */}
-          <div className="relative">
-            <form onSubmit={handleSubmit} className="relative">
-              <Textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyPress}
-                placeholder="Ask me about math, science, history, or anything you're studying..."
-                className="min-h-[120px] resize-none rounded-xl border-2 border-gray-200 bg-white px-4 py-3 pr-12 text-base shadow-lg focus:border-purple-500 focus:ring-0"
-                disabled={isLoading}
-              />
-              <Button
-                type="submit"
-                size="icon"
-                disabled={!input.trim() || isLoading}
-                className="absolute right-3 bottom-3 h-8 w-8 rounded-lg bg-purple-600 hover:bg-purple-700 disabled:opacity-50"
-              >
-                {isLoading ? (
-                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                ) : (
-                  <SendIcon className="h-4 w-4" />
-                )}
-              </Button>
-            </form>
-          </div>
+          <CommonTextarea
+            value={input}
+            onChange={setInput}
+            onSubmit={handleSubmit}
+            placeholder="Ask me about math, science, history, or anything you're studying..."
+            disabled={isLoading}
+            isLoading={isLoading}
+            showSubmitButton={true}
+            models={models}
+            selectedModel={selectedModel}
+            onModelChange={setSelectedModel}
+            showModelSelector={true}
+            showAudioButton={true}
+            onAudioTranscription={(text) => setInput(prev => prev + text)}
+            showFileUpload={true}
+            onFileUpload={(files) => {
+              // Handle file upload - for now just log the files
+              console.log('Files uploaded:', files);
+              // You can add file processing logic here
+            }}
+            acceptedFileTypes="image/*,.pdf,.doc,.docx,.txt"
+          />
 
           {/* Example Prompts */}
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
