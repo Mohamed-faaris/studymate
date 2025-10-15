@@ -1,7 +1,9 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import { User } from "~/server/db/user.schema";
+import { db } from "~/server/db";
+import { users } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -43,21 +45,22 @@ export const authConfig = {
         }
 
         try {
-          const user = await User.findOne({ email: credentials.email });
-
-          if (!user) {
+          const email = typeof credentials.email === 'string' ? credentials.email : '';
+          const found = await db.select().from(users).where(eq(users.email, email));
+          if (!found.length) {
             return null;
           }
-
-          // Verify password with bcryptjs
-          if (user.passwordHash && await bcryptjs.compare(credentials.password, user.passwordHash)) {
-            return {
-              id: user._id.toString(),
-              email: user.email,
-              name: user.name,
-            };
+          const user = found[0];
+          if (typeof user.passwordHash === 'string' && typeof credentials.password === 'string') {
+            const isMatch = await bcryptjs.compare(credentials.password, user.passwordHash);
+            if (isMatch) {
+              return {
+                id: String(user.id),
+                email: user.email,
+                name: user.name,
+              };
+            }
           }
-
           return null;
         } catch (error) {
           console.error("Auth error:", error);

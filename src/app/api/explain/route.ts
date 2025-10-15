@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import aiApiClient from "~/lib/axios";
+import { Conversation } from "~/server/db/conversation.schema";
 
 interface AIExplanationResponse {
   question: string;
@@ -11,34 +12,22 @@ interface AIExplanationResponse {
   pdf_chunks: null | any[];
 }
 
+RequestType{
+  topic: string;
+  level: string;
+  uuid: string;
+}
+
 export async function POST(request: Request) {
-  try {
-    const session = await auth();
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+   const { topic, level, uuid } = await request.json();
 
-    const { topic, level, session_id } = await request.json();
+   if (!topic || !level ) {
+     return NextResponse.json(
+       { error: "Topic, level, and UUID are required" },
+       { status: 400 }
+     );
+   }
 
-    if (!topic || !level) {
-      return NextResponse.json(
-        { error: "Topic and level are required" },
-        { status: 400 }
-      );
-    }
-    const res = await aiApiClient.post("/explain", {
-      question: topic,
-      levels: level,
-      session_id: session_id || "default_session",
-    });
-
-    const aiResponse: AIExplanationResponse = res.data;
-
-    return NextResponse.json({ uuid: aiResponse.session_id, response: aiResponse });
-
-  } catch (error) {
-    console.error("Error in explain API:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+  
 }

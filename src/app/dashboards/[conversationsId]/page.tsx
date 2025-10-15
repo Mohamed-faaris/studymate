@@ -227,7 +227,7 @@ export default function ConversationPage() {
   const retryMessage = useCallback(
     async (messageId: string) => {
       const messageToRetry = messages.find((msg) => msg.id === messageId);
-      if (!messageToRetry || messageToRetry.role !== "user") return;
+      if (messageToRetry?.role !== "user") return;
 
       // Reset message status to sending
       setMessages((prev) =>
