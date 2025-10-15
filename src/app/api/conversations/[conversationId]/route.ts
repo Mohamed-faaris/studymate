@@ -58,7 +58,7 @@ export async function GET(
       createdAt: conversation.createdAt,
       updatedAt: conversation.updatedAt,
     };
-
+    console.log("Fetched conversation:", conversationData);
     return NextResponse.json({ conversation: conversationData });
 
   } catch (error) {
