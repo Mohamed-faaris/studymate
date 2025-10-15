@@ -11,8 +11,6 @@ export async function GET() {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-
-
         const conversations = await Conversation.find({
             createdBy: session.user.id
         }).select('title _id createdAt').sort({ createdAt: -1 });
