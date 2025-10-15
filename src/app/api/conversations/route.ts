@@ -1,10 +1,9 @@
 import { auth } from "~/server/auth";
-import { db } from "~/server/db";
-import { conversations } from "~/server/db/schema";
-import { eq, desc } from "drizzle-orm";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { Conversation } from "~/server/mongoDb/conversation.schema";
 
-export async function GET(_request: NextRequest) {
+
+export async function GET() {
   try {
     const session = await auth();
 
@@ -12,49 +11,24 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const userConversations = await db
-      .select({
-        id: conversations.id,
-        title: conversations.title,
-        mode: conversations.mode,
-        createdAt: conversations.createdAt,
-        updatedAt: conversations.updatedAt,
-      })
-      .from(conversations)
-      .where(eq(conversations.createdById, session.user.id))
-      .orderBy(desc(conversations.updatedAt))
-      .limit(20);
 
-    return NextResponse.json(userConversations);
+
+    const conversations = await Conversation.find({
+      createdBy: session.user.id
+    }).select('title _id createdAt').sort({ createdAt: -1 });
+
+    const conversationsList = conversations.map(conv => ({
+      id: conv._id.toString(),
+      title: conv.title,
+      createdAt: conv.createdAt
+    }));
+
+    return NextResponse.json({
+      conversations: conversationsList
+    });
+
   } catch (error) {
     console.error("Error fetching conversations:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await request.json();
-    const { title, mode = "study" } = body;
-
-    const [newConversation] = await db
-      .insert(conversations)
-      .values({
-        title: title ?? "New Conversation",
-        mode,
-        createdById: session.user.id,
-      })
-      .returning();
-
-    return NextResponse.json(newConversation);
-  } catch (error) {
-    console.error("Error creating conversation:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
