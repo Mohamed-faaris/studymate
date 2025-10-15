@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { SparklesIcon } from "lucide-react";
+import { BookOpenIcon } from "lucide-react";
 import { CommonTextarea } from "~/components/ui/common-textarea";
 
 export default function DashboardPage() {
@@ -68,7 +68,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-center border-b border-gray-200 bg-white px-4 py-3">
         <div className="flex items-center space-x-2">
-          <SparklesIcon className="h-6 w-6 text-purple-600" />
+          <BookOpenIcon className="h-6 w-6 text-purple-600" />
           <h1 className="text-xl font-semibold text-gray-900">StudyMate</h1>
         </div>
       </div>
