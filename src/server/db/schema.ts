@@ -10,6 +10,7 @@ export const users = sqliteTable('users', {
 export const conversations = sqliteTable('conversations', {
     id: integer('id').primaryKey(),
     userId: integer('user_id').notNull(),
+    sessionId: text('session_id').notNull(),
     title: text('title').notNull(),
     msgs: text('msgs').notNull(), 
 });
