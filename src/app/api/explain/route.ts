@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "~/server/auth";
 import aiApiClient from "~/lib/axios";
+import { Conversation } from "~/server/db/conversation.schema";
 
 interface AIExplanationResponse {
   question: string;
@@ -11,34 +12,63 @@ interface AIExplanationResponse {
   pdf_chunks: null | any[];
 }
 
+RequestType{
+  topic: string;
+  level: string;
+  uuid: string;
+}
+
+import { db } from "~/server/db";
+import { conversations } from "~/server/db/schema";
+import { eq } from "drizzle-orm";
+
 export async function POST(request: Request) {
-  try {
-    const session = await auth();
+  const { topic, level, id, session_id, userId } = await request.json();
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const { topic, level, session_id } = await request.json();
-
-    if (!topic || !level) {
-      return NextResponse.json(
-        { error: "Topic and level are required" },
-        { status: 400 }
-      );
-    }
-    const res = await aiApiClient.post("/explain", {
-      question: topic,
-      levels: level,
-      session_id: session_id || "default_session",
-    });
-
-    const aiResponse: AIExplanationResponse = res.data;
-
-    return NextResponse.json({ uuid: aiResponse.session_id, response: aiResponse });
-
-  } catch (error) {
-    console.error("Error in explain API:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  if (!topic || !level || !id) {
+    return NextResponse.json(
+      { error: "Topic, level, and ID are required" },
+      { status: 400 }
+    );
   }
+
+
+
+  // Check if conversation exists
+  const existing = await db.select().from(conversations).where(eq(conversations.id, id));
+  if (!existing.length) {
+    // Create new conversation
+    await db.insert(conversations).values({
+      id,
+      userId: userId ?? 1, // fallback userId if not provided
+      sessionId: session_id ?? '',
+      title: topic,
+      msgs: '[]',
+    });
+  }
+
+  const aiResponse = await aiApiClient.post<AIExplanationResponse>("/explain",
+    {
+      "question": topic,
+      "levels": level,
+      "session_id": session_id
+    }
+  );
+
+  // Push AI response into msgs array
+  const convo = await db.select().from(conversations).where(eq(conversations.id, id));
+  let msgs: any[] = [];
+  if (convo.length > 0 && typeof convo[0]?.msgs === 'string') {
+    try {
+      msgs = JSON.parse(convo[0].msgs);
+    } catch {
+      msgs = [];
+    }
+  }
+  msgs.push(aiResponse.data);
+  await db.update(conversations)
+    .set({ msgs: JSON.stringify(msgs) })
+    .where(eq(conversations.id, id));
+
+  return NextResponse.json({ message: 'AI response added to conversation', id, ai: aiResponse.data });
 }

@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { User } from '~/server/db/user.schema';
-import { connectMongo } from '~/server/db/mongoose';
+import { type NextRequest, NextResponse } from 'next/server';
+import { db } from '~/server/db';
+import { users } from '~/server/db/schema';
+import { eq } from 'drizzle-orm';
 
 export async function POST(request: NextRequest) {
     try {
@@ -18,14 +19,10 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Connect to database
-        console.log('🔄 Ensuring MongoDB connection...');
-        await connectMongo();
-
-        // Check if user already exists
+        // Check if user already exists in Drizzle
         console.log('🔍 Checking for existing user...');
-        const existingUser = await (User as any).findOne({ email });
-        if (existingUser) {
+        const existingUser = await db.select().from(users).where(eq(users.email, email));
+        if (existingUser.length > 0) {
             console.log('❌ User already exists:', email);
             return NextResponse.json(
                 { error: 'User with this email already exists' },
@@ -33,16 +30,10 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Create new user
+        // Create new user in Drizzle
         console.log('👤 Creating new user...');
-        const user = new User({
-            name,
-            email,
-            passwordHash,
-        });
-
-        await user.save();
-        console.log('✅ User created successfully:', user._id);
+        await db.insert(users).values({ name, email, passwordHash });
+        console.log('✅ User created successfully:', email);
 
         return NextResponse.json(
             { message: 'User created successfully' },

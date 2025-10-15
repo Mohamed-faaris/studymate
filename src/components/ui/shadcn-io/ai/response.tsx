@@ -25,7 +25,7 @@ function parseIncompleteMarkdown(text: string): string {
   // Handle incomplete links and images
   // Pattern: [...] or ![...] where the closing ] is missing
   const linkImagePattern = /(!?\[)([^\]]*?)$/;
-  const linkMatch = result.match(linkImagePattern);
+  const linkMatch = linkImagePattern.exec(result);
   if (linkMatch) {
     // If we have an unterminated [ or ![, remove it and everything after
     const startIndex = result.lastIndexOf(linkMatch[1]);
@@ -34,7 +34,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete bold formatting (**)
   const boldPattern = /(\*\*)([^*]*?)$/;
-  const boldMatch = result.match(boldPattern);
+  const boldMatch = boldPattern.exec(result);
   if (boldMatch) {
     // Count the number of ** in the entire string
     const asteriskPairs = (result.match(/\*\*/g) || []).length;
@@ -46,7 +46,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete italic formatting (__)
   const italicPattern = /(__)([^_]*?)$/;
-  const italicMatch = result.match(italicPattern);
+  const italicMatch = italicPattern.exec(result);
   if (italicMatch) {
     // Count the number of __ in the entire string
     const underscorePairs = (result.match(/__/g) || []).length;
@@ -58,7 +58,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete single asterisk italic (*)
   const singleAsteriskPattern = /(\*)([^*]*?)$/;
-  const singleAsteriskMatch = result.match(singleAsteriskPattern);
+  const singleAsteriskMatch = singleAsteriskPattern.exec(result);
   if (singleAsteriskMatch) {
     // Count single asterisks that aren't part of **
     const singleAsterisks = result.split("").reduce((acc, char, index) => {
@@ -81,7 +81,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete single underscore italic (_)
   const singleUnderscorePattern = /(_)([^_]*?)$/;
-  const singleUnderscoreMatch = result.match(singleUnderscorePattern);
+  const singleUnderscoreMatch = singleUnderscorePattern.exec(result);
   if (singleUnderscoreMatch) {
     // Count single underscores that aren't part of __
     const singleUnderscores = result.split("").reduce((acc, char, index) => {
@@ -104,7 +104,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete inline code blocks (`) - but avoid code blocks (```)
   const inlineCodePattern = /(`)([^`]*?)$/;
-  const inlineCodeMatch = result.match(inlineCodePattern);
+  const inlineCodeMatch = inlineCodePattern.exec(result);
   if (inlineCodeMatch) {
     // Check if we're dealing with a code block (triple backticks)
     const hasCodeBlockStart = result.includes("```");
@@ -142,7 +142,7 @@ function parseIncompleteMarkdown(text: string): string {
 
   // Handle incomplete strikethrough formatting (~~)
   const strikethroughPattern = /(~~)([^~]*?)$/;
-  const strikethroughMatch = result.match(strikethroughPattern);
+  const strikethroughMatch = strikethroughPattern.exec(result);
   if (strikethroughMatch) {
     // Count the number of ~~ in the entire string
     const tildePairs = (result.match(/~~/g) || []).length;
