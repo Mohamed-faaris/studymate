@@ -89,7 +89,7 @@ export default function SideBar() {
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-full border-r border-gray-700 bg-gray-900 text-white transition-all duration-300 ${
+      className={`fixed top-0 left-0 flex h-full flex-col border-r border-gray-700 bg-gray-900 text-white transition-all duration-300 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
     >
@@ -189,8 +189,8 @@ export default function SideBar() {
         </div>
       )}
 
-      {/* Profile Section */}
-      <div className="border-t border-gray-700 p-4">
+      {/* Profile Section - Always at bottom */}
+      <div className="mt-auto border-t border-gray-700 p-4">
         {!isCollapsed ? (
           <div className="flex items-center space-x-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-600">

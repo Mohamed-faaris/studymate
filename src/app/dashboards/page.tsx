@@ -9,6 +9,7 @@ export default function DashboardPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [selectedModel, setSelectedModel] = useState("study");
+  const [selectedLevel, setSelectedLevel] = useState("novice");
   const router = useRouter();
 
   const models = [
@@ -39,6 +40,7 @@ export default function DashboardPage() {
         body: JSON.stringify({
           message: input,
           mode: selectedModel,
+          level: selectedLevel,
           // No chatId for new conversations
         }),
       });
@@ -106,6 +108,9 @@ export default function DashboardPage() {
               // You can add file processing logic here
             }}
             acceptedFileTypes="image/*,.pdf,.doc,.docx,.txt"
+            showLevelSelector={true}
+            selectedLevel={selectedLevel}
+            onLevelChange={setSelectedLevel}
           />
 
           {/* Example Prompts */}

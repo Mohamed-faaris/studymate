@@ -123,3 +123,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom animation delays for loading dots */
+.animation-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}

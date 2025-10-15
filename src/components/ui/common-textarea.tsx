@@ -21,6 +21,12 @@ interface Model {
   description: string;
 }
 
+const LEVELS = [
+  { id: "novice", label: "Novice" },
+  { id: "university", label: "University" },
+  { id: "researcher", label: "Researcher" },
+];
+
 interface CommonTextareaProps {
   value: string;
   onChange: (value: string) => void;
@@ -44,6 +50,10 @@ interface CommonTextareaProps {
   showFileUpload?: boolean;
   onFileUpload?: (files: FileList) => void;
   acceptedFileTypes?: string;
+  // Level selection props
+  showLevelSelector?: boolean;
+  selectedLevel?: string;
+  onLevelChange?: (level: string) => void;
 }
 
 export const CommonTextarea = forwardRef<
@@ -71,6 +81,9 @@ export const CommonTextarea = forwardRef<
       showFileUpload = false,
       onFileUpload,
       acceptedFileTypes = "*",
+      showLevelSelector = false,
+      selectedLevel = "novice",
+      onLevelChange,
       ...props
     },
     ref,
@@ -291,6 +304,26 @@ export const CommonTextarea = forwardRef<
               className="hidden"
               aria-label="Upload files"
             />
+          )}
+
+          {/* Level Selector */}
+          {showLevelSelector && (
+            <div className="absolute right-14 bottom-3 flex items-center space-x-1">
+              {LEVELS.map((level) => (
+                <button
+                  key={level.id}
+                  type="button"
+                  onClick={() => onLevelChange?.(level.id)}
+                  className={`rounded-md px-2 py-1 text-xs font-medium transition-all duration-200 ${
+                    selectedLevel === level.id
+                      ? "scale-110 bg-purple-600 text-white shadow-lg"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {level.label}
+                </button>
+              ))}
+            </div>
           )}
 
           {/* Submit Button - Right Bottom Corner */}
