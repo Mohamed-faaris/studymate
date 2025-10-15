@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function ConversationPage() {
   const router = useRouter();
-  const { conversationsIds } = router.query;
+  const {  conversationsId } = router.query;
   const [messages, setMessages] = useState([
     { sender: "bot", text: "Hello! How can I help you today?" },
   ]);
