@@ -45,8 +45,16 @@ export default function ConversationPage() {
 
   const models = [
     { id: "study", label: "Study", description: "General study assistance" },
-    { id: "debug", label: "Debug", description: "Code debugging and troubleshooting" },
-    { id: "roadmap", label: "Roadmap", description: "Learning path and career guidance" },
+    {
+      id: "debug",
+      label: "Debug",
+      description: "Code debugging and troubleshooting",
+    },
+    {
+      id: "roadmap",
+      label: "Roadmap",
+      description: "Learning path and career guidance",
+    },
   ];
 
   useAutosizeTextArea({
@@ -141,7 +149,8 @@ export default function ConversationPage() {
       const errorMessage: Message = {
         id: Date.now().toString(),
         role: "assistant",
-        content: "Sorry, I encountered an error processing your message. Please try again.",
+        content:
+          "Sorry, I encountered an error processing your message. Please try again.",
         createdAt: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -202,7 +211,10 @@ export default function ConversationPage() {
         <div className="mx-auto max-w-4xl p-4">
           <PromptInput onSubmit={handleSendMessage}>
             <PromptInputToolbar>
-              <PromptInputModelSelect value={selectedModel} onValueChange={setSelectedModel}>
+              <PromptInputModelSelect
+                value={selectedModel}
+                onValueChange={setSelectedModel}
+              >
                 <PromptInputModelSelectTrigger className="w-40 sm:w-48">
                   <PromptInputModelSelectValue />
                 </PromptInputModelSelectTrigger>
@@ -211,7 +223,9 @@ export default function ConversationPage() {
                     <PromptInputModelSelectItem key={model.id} value={model.id}>
                       <div className="flex flex-col">
                         <span className="font-medium">{model.label}</span>
-                        <span className="text-xs text-muted-foreground">{model.description}</span>
+                        <span className="text-muted-foreground text-xs">
+                          {model.description}
+                        </span>
                       </div>
                     </PromptInputModelSelectItem>
                   ))}
@@ -223,7 +237,7 @@ export default function ConversationPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
-              placeholder={`Ask me anything about ${models.find(m => m.id === selectedModel)?.label.toLowerCase()}...`}
+              placeholder={`Ask me anything about ${models.find((m) => m.id === selectedModel)?.label.toLowerCase()}...`}
               disabled={isLoading}
             />
             <PromptInputSubmit
