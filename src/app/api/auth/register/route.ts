@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { User } from '~/server/mongoDb/user.schema';
+import { User } from '~/server/db/user.schema';
 import { connectMongo } from '~/server/db/mongoose';
 
 export async function POST(request: NextRequest) {

@@ -1,7 +1,7 @@
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcryptjs from "bcryptjs";
-import { User } from "~/server/mongoDb/user.schema";
+import { User } from "~/server/db/user.schema";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
