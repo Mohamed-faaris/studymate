@@ -13,17 +13,14 @@ export default function DashboardPage() {
   const router = useRouter();
 
   const models = [
-    { id: "study", label: "Study", description: "General study assistance" },
-    {
-      id: "debug",
-      label: "Debug",
-      description: "Code debugging and troubleshooting",
-    },
-    {
-      id: "roadmap",
-      label: "Roadmap",
-      description: "Learning path and career guidance",
-    },
+    { id: "explain", label: "Explain", description: "Get detailed explanations" },
+    { id: "flashcards", label: "Flashcards", description: "Generate study flashcards" },
+    { id: "quiz", label: "Quiz", description: "Create practice quizzes" },
+    { id: "flowchart", label: "Flowchart", description: "Generate flowcharts and diagrams" },
+    { id: "thought-questions", label: "Thought Questions", description: "Generate critical thinking questions" },
+    { id: "execute-code", label: "Execute Code", description: "Run and test code snippets" },
+    { id: "debug-code", label: "Debug Code", description: "Debug and fix code issues" },
+    { id: "example-code", label: "Example Code", description: "Generate code examples" },
   ];
 
   const handleSubmit = async () => {
@@ -116,43 +113,39 @@ export default function DashboardPage() {
           {/* Example Prompts */}
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <button
-              onClick={() => setInput("Explain the gradient descent algorithm")}
+              onClick={() => setInput("Explain how neural networks work")}
               className="rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50"
             >
-              <div className="font-medium">🤖 ML Fundamentals</div>
+              <div className="font-medium">📚 Get Explanation</div>
               <div className="mt-1 text-xs text-gray-500">
-                "Explain the gradient descent algorithm"
+                "Explain how neural networks work"
               </div>
             </button>
             <button
-              onClick={() => setInput("Debug this PyTorch training loop")}
+              onClick={() => setInput("Create flashcards for Python data types")}
               className="rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50"
             >
-              <div className="font-medium">🧠 Model Debugging</div>
+              <div className="font-medium">🎴 Generate Flashcards</div>
               <div className="mt-1 text-xs text-gray-500">
-                "Debug this PyTorch training loop"
+                "Create flashcards for Python data types"
               </div>
             </button>
             <button
-              onClick={() =>
-                setInput("Create a study plan for machine learning interviews")
-              }
+              onClick={() => setInput("Create a quiz about photosynthesis")}
               className="rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50"
             >
-              <div className="font-medium">📈 Career Prep</div>
+              <div className="font-medium">❓ Make a Quiz</div>
               <div className="mt-1 text-xs text-gray-500">
-                "Create a study plan for machine learning interviews"
+                "Create a quiz about photosynthesis"
               </div>
             </button>
             <button
-              onClick={() =>
-                setInput("Explain supervised vs unsupervised learning")
-              }
+              onClick={() => setInput("Debug this Python function: def factorial(n): if n == 0: return 1 else: return n * factorial(n)")}
               className="rounded-lg border border-gray-200 bg-white p-3 text-left text-sm text-gray-700 hover:border-gray-300 hover:bg-gray-50"
             >
-              <div className="font-medium">📊 Learning Types</div>
+              <div className="font-medium">� Debug Code</div>
               <div className="mt-1 text-xs text-gray-500">
-                "Explain supervised vs unsupervised learning"
+                "Debug this Python factorial function"
               </div>
             </button>
           </div>

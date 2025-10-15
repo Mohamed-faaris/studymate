@@ -19,10 +19,11 @@ export default function RootPage() {
             Welcome to StudyMate
           </h2>
           <p className="mb-8 text-xl text-gray-600">
-            Your AI-powered study assistant for learning, debugging, and career guidance.
+            Your AI-powered study assistant for learning, debugging, and career
+            guidance.
           </p>
 
-          <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+          <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
             <Link
               href="/sign-in"
               className="flex-1 rounded-lg bg-blue-600 px-6 py-3 font-medium text-white transition duration-200 hover:bg-blue-700"
